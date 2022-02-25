@@ -25,5 +25,13 @@
     <p>Lorem ipsum...</p>
   </div>
 
+<!--But there is a better way, just include for loop from flex_page.html-->
+{% comment %} <div>
+    {{ self.content }}
+</div> {% endcomment %}
+
+{% for block in page.content %}
+    {% include_block block %}
+{% endfor %}
 
 {% endblock %}
