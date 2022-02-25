@@ -1,0 +1,77 @@
+from email.policy import default
+from importlib.metadata import requires
+from wagtail.core import blocks
+from wagtail.images.blocks import ImageChooserBlock
+
+class TitleAndTextBlock(blocks.StructBlock):
+    """ Title and text and nothing else."""
+    title = blocks.CharBlock(required=True, help_text="Add you title")
+    text = blocks.TextBlock(required=True, help_text="Add additional text")
+
+    class Meta:
+        template = "streams/title_and_text_block.html"
+        icon = "edit"
+        label = "Title & Text"
+
+
+class RichtextBlock(blocks.RichTextBlock):
+    """Richtext with all the features.
+    But when is full, someone can add JS and fuck us with cross scripting!!!"""
+
+    class Meta:
+        template = "streams/richtext_block.html"
+        icon = "doc-full"
+        label = "Full Richtext"
+
+
+class LimitedRichtextBlock(blocks.RichTextBlock):
+    """Richtext without all the features. But there is shorter way in the CTABlock example"""
+    def __init__(self, required=True, help_text=None, editor='default', features=None, validators=(), **kwargs):
+        """ Init from the main class, then overwrite self.features """
+        super().__init__(**kwargs)
+        self.features = [ 
+            "bold",
+            "italic",
+            "link"
+        ]
+
+    class Meta:
+        template = "streams/richtext_block.html"
+        icon = "edit"
+        label = "Simple Richtext"
+
+
+class CardBlock(blocks.StructBlock):
+    """Card with images and text. """
+    title = blocks.CharBlock(required=True, help_text="Add you title")
+
+    cards = blocks.ListBlock(
+        blocks.StructBlock(
+            [ 
+                ("image", ImageChooserBlock(required=True)),
+                ("title", blocks.CharBlock(required=True, max_length=40)),
+                ("text", blocks.TextBlock(required=True, max_length=200)),
+                ("button_page", blocks.PageChooserBlock(required=False)),
+                ("button_url", blocks.URLBlock(required=False, help_text="Cao cao cao")),
+            ]
+        )
+    )
+
+    class Meta:
+        template = "streams/cards.html"
+        icon = "placeholder"
+        label = "Expensive Lightbulbs"
+
+
+class CTABlock(blocks.StructBlock):
+    """ Simple call to action section"""
+    title = blocks.CharBlock(required=True, max_length=60)
+    text = blocks.RichTextBlock(required=True, features=["bold", "italic"])
+    button_page = blocks.PageChooserBlock(required=False)
+    button_url = blocks.URLBlock(required=False)
+    button_text =  blocks.CharBlock(required=True, default="Read More", max_length=60)
+
+    class Meta:
+        template = "streams/cta_block.html"
+        icon = "placeholder"
+        label = "Call to Action"

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+
+
+{% block content %}
+
+<!--Check more on docs how to fill images etc...-->
+
+
+<div class="container">
+    <h1>{{ self.banner_title }}<span class="badge bg-warning display-1 text-right">{{ self.banner_subtitle|richtext }}</span></h1>
+        {% if self.link_to_other_page %}
+            {{ self.link_to_other_page }}
+        {% endif %}
+
+
+</div>
+
+<div class="mt-4 p-5 bg-outline-dark rounded">
+    {% image self.banner_image fill-1900x600 as img %}
+    <img src="{{ img.url }}" class="img-fluid" alt="...">
+    <h1>Jumbotron Example</h1>
+    <p>Lorem ipsum...</p>
+  </div>
+
+
+{% endblock %}
