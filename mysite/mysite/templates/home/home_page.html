@@ -14,8 +14,6 @@
         {% if self.link_to_other_page %}
             {{ self.link_to_other_page }}
         {% endif %}
-
-
 </div>
 
 <div class="mt-4 p-5 bg-outline-dark rounded">
@@ -23,7 +21,7 @@
     <img src="{{ img.url }}" class="img-fluid" alt="...">
     <h1>Jumbotron Example</h1>
     <p>Lorem ipsum...</p>
-  </div>
+</div>
 
 <!--But there is a better way, just include for loop from flex_page.html-->
 {% comment %} <div>
@@ -33,5 +31,46 @@
 {% for block in page.content %}
     {% include_block block %}
 {% endfor %}
+
+
+<div class="text-center">
+    <h1>Remeber the candles, they are beautful</h1>
+</div>
+<div class="container">
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4" aria-label="Slide 5"></button>
+        </div>
+        <div class="carousel-inner">
+            <!-- .all to avoid ( 'DeferringRelatedManager' object is not iterable )-->
+            {% for img in self.carousel_images.all %}
+
+                {% image img.carousel_image fill-700x400 as ready_image %}
+
+                <div class="carousel-item 
+                {% if forloop.counter == 1 %}
+                    active
+                {% endif %}">
+                    <img src="{{ ready_image.url }}" class="d-block w-100" alt="{{ ready_image.alt }}">
+                </div>
+
+            {% endfor %}
+
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</div>
+
 
 {% endblock %}
