@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load wagtailimages_tags wagtailroutablepage_tags %}
+
+{% block content %}
+
+    <div class="container">
+        <h1>Latest Posts</h1>
+            <!--But here in routablepageurl url is neccessary to add method name 
+    other usecase is categories pages tags etc-->
+        <a href="{% routablepageurl page 'latest_blog_posts' %}">View Latest Post</a>
+        <small>Special link is "{{ a_special_link }}"</small>
+        <hr>
+        {% for post in latest_posts %}
+            <div class="row">
+                <div class="col-sm-4">
+                    <!--Img goes here-->
+                    {% image post.blog_image fill-250x250 as blog_img %}
+                    <a href="{{ post.url }}">
+                        <img src="{{ blog_img.url }}" alt="{{ blog_img.alt }}">
+                    </a>
+                </div>
+                <div class="col-sm-8">
+                    <a href="{{ post.url }}">
+                        {{ post.custom_title }}
+                    </a>
+                </div>
+            </div>
+            <small>Created by: {{ creator }}
+            <hr>
+        {% endfor %}
+    </div>
+{% endblock %}

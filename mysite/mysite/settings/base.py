@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
     'wagtail.contrib.settings',
+    # to enable routable page, you must add ti to settings
+    'wagtail.contrib.routable_page',
     # ModleAdmin(Subscriber)
     'wagtail.contrib.modeladmin',
 

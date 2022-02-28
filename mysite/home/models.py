@@ -1,4 +1,5 @@
 from django.db import models
+from django.shortcuts import render
 
 from modelcluster.fields import ParentalKey
 
@@ -10,6 +11,8 @@ from wagtail.admin.edit_handlers import (
     )
 from wagtail.core.fields import RichTextField, StreamField
 from wagtail.images.edit_handlers import ImageChooserPanel
+# import which will enable routable page
+from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 
 from streams import blocks
 
@@ -31,7 +34,7 @@ class HomePageCarouselImages(Orderable):
     ]
 
 
-class HomePage(Page):
+class HomePage(RoutablePageMixin, Page):
     """ Home page model """
     template = "home/home_page.html"
     max_count = 1
@@ -90,3 +93,11 @@ class HomePage(Page):
 
     class Meta:
         verbose_name = "Home page"
+
+    # this one will overwrite home page is route is /, but if you add name of the route it will be blog/subscribe
+    # and here we will add already created Subscriber model
+    @route(r'^subscribe/$')
+    def the_subscribe_page(self, request, *args, **kwargs):
+        context = self.get_context(request, *args, **kwargs)
+        context["a_special_text"] = "Hello world 123123"
+        return render(request, "home/subscribe.html", context)
