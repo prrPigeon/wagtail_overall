@@ -36,16 +36,32 @@ class BlogListingPage(RoutablePageMixin, Page):
         context["regular_context_var"] = "yea yea yea"
         return context
 
-    # you can override name of routable page with name as the second parameter in @route()
-    # @route(r'^latest/$', name="latestposts")
-    # by adding r'^latest/?$ question mark it will auto correct and add / on the routable page
+
     @route(r'^latest/$')
     def latest_blog_posts(self, request, *args, **kwargs):
+        """you can override name of routable page with name as the second parameter in @route()
+        @route(r'^latest/$', name="latestposts")
+        by adding r'^latest/?$ question mark it will auto correct and add / on the routable page"""
         context = self.get_context(request, *args, **kwargs)
         context["latest_posts"] = BlogDetailPage.objects.live().public()[:1]
         """ YOU CAN ADD HERE WHAT EVER YOU WANT, THIS CONTEXT IS USABEL IN THE TEMPLATES"""
         context["creator"] = "Mijato"
         return render(request, "blog/latest_posts.html", context)
+
+    def get_sitemap_urls(self, request):
+        """ overriding sitemap to add RoutablePageMixin page, nad to exclude from sitemap
+        just return empty list """
+        sitemap = super().get_sitemap_urls(request)
+        sitemap.append(
+            {
+                "location": self.full_url + self.reverse_subpage("latest_blog_posts"),
+                # when BlogListingPage is updated count this one too
+                "lastmod": (self.last_published_at or self.latest_revision_created_at),
+                "priority": 0.9
+            }
+        )
+        return sitemap
+
 
 
 

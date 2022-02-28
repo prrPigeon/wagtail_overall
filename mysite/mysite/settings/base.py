@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'wagtail.contrib.routable_page',
     # ModleAdmin(Subscriber)
     'wagtail.contrib.modeladmin',
-
+    # enable sitemaps, but you must enable and django.contrib.sitemaps
+    'wagtail.contrib.sitemaps',
     'wagtail.embeds',
     'wagtail.sites',
     'wagtail.users',
@@ -56,6 +57,8 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    # enable sitemaps
+    'django.contrib.sitemaps',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
