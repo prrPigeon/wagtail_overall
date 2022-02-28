@@ -1,7 +1,6 @@
-from email.policy import default
-from importlib.metadata import requires
 from wagtail.core import blocks
 from wagtail.images.blocks import ImageChooserBlock
+
 
 class TitleAndTextBlock(blocks.StructBlock):
     """ Title and text and nothing else."""
@@ -75,3 +74,33 @@ class CTABlock(blocks.StructBlock):
         template = "streams/cta_block.html"
         icon = "placeholder"
         label = "Call to Action"
+
+
+
+class LinkStructValue(blocks.StructValue):
+    """Additional logic for our urls, 'I think this will be some kind of help to ButtonBlock class' """
+
+    def url(self):
+        button_page = self.get("button_page")
+        button_url = self.get("button_url")
+        # return page.url if page else external_url
+        if button_url:
+            return button_url
+        else:
+            return button_page.url
+
+        # def latest_posts(self):
+        """ Caling a BlogDetailPage causes circular import, must investigate about it"""
+        #     return BlogDetailPage.objects.live()[:3]
+
+class ButtonBlock(blocks.StructBlock):
+    """To avoid writing logic inside template, you can write a custom StreamField logic"""
+    button_page = blocks.PageChooserBlock(required=False, help_text="if selected, this url will be used first")
+    button_url = blocks.URLBlock(required=False, help_text="if added, this url will be used secondarily to button page")
+    
+
+    class Meta:
+        template = "streams/button_block.html"
+        icon = "placeholder"
+        label = "Single Button"
+        value_class = LinkStructValue

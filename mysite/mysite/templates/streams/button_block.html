@@ -1,0 +1,11 @@
+{% load wagtailcore_tags %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-5 offset-md-1 col-sm-12 text-center">
+            <a href="{{ self.url }}">Learn More</a>
+        </div>
+    </div>
+    {% comment %} {% for post in self.latest_posts %}
+        {{ post.title }}
+    {% endfor %} {% endcomment %}
+</div>
