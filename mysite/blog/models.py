@@ -1,15 +1,76 @@
+from turtle import heading
 from django.db import models
 from django.shortcuts import render 
 
-from wagtail.core.models import Page
+from modelcluster.fields import ParentalKey
+
+from wagtail.core.models import Page, Orderable
 from wagtail.admin.edit_handlers import (
     FieldPanel, StreamFieldPanel,
+    MultiFieldPanel, InlinePanel
 )
 from wagtail.images.edit_handlers import ImageChooserPanel
+
+from wagtail.snippets.edit_handlers import SnippetChooserPanel
+
 from wagtail.core.fields import StreamField
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
+from wagtail.snippets.models import register_snippet
 
 from streams import blocks 
+
+
+class BlogAuthorsOrderable(Orderable):
+    """Alow you to select one or more authors for one blog post, from Snippets"""
+    page = ParentalKey("blog.BlogDetailPage", related_name="blog_authors")
+    author = models.ForeignKey(
+        'blog.BlogAuthor',
+        on_delete=models.CASCADE
+    )
+    panels = [ 
+        SnippetChooserPanel("author"),
+    ]
+
+class BlogAuthor(models.Model):
+    """Blog author for snippets. Just regular Django model
+    but you must include it in the panel and register it with register_snippets to show
+    in admin panel"""
+    name = models.CharField(max_length=100)
+    website = models.URLField(blank=True, null=True)
+    image = models.ForeignKey(
+        "wagtailimages.Image",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=False,
+        related_name="+"
+    )
+    
+    panels = [
+        MultiFieldPanel(
+            [ 
+                FieldPanel("name"),
+                ImageChooserPanel("image")
+            ],
+            heading="Name and Image"
+        ),
+        MultiFieldPanel( 
+            [ 
+                FieldPanel("website")
+            ],
+            heading="Links"
+        )
+    ]
+
+    def __str__(self):
+        return self.name
+
+
+    class Meta:
+        verbose_name = "Blog Authors"
+        verbose_name_plural = "Blog Authors"
+
+
+register_snippet(BlogAuthor)
 
 
 class BlogListingPage(RoutablePageMixin, Page):
@@ -34,6 +95,7 @@ class BlogListingPage(RoutablePageMixin, Page):
         context["posts"] = BlogDetailPage.objects.live().public()
         context["a_special_link"] = self.reverse_subpage('latest_blog_posts')
         context["regular_context_var"] = "yea yea yea"
+        context["authors"] = BlogAuthor.objects.all()
         return context
 
 
@@ -94,5 +156,11 @@ class BlogDetailPage(Page):
     content_panels = Page.content_panels + [ 
         FieldPanel("custom_title"),
         ImageChooserPanel("blog_image"),
+        MultiFieldPanel(
+            [ 
+                InlinePanel("blog_authors", label="Author", min_num=1, max_num=2)
+            ],
+            heading="Author(s)"
+        ),
         StreamFieldPanel("content")
     ]

@@ -8,6 +8,22 @@
             <div class="text-center">
                 <h1>{{ self.custom_title }}</h1>
             </div>
+            <h5>Authors:</h5>
+                {% for each in self.blog_authors.all %}
+                    {% image each.author.image fill-50x50 as img %}
+                    <div class="row">
+                        <div class="col-lg-8 offset-lg-2">
+                            <small><img src="{{ img.url }}" alt="{{ each.author.name }}"></small>
+                            <small>{{ each.author.name }}</small>
+                            {% if each.author.website %}
+                                <a href="{{ each.author.website }}">
+                                (website)
+                                </a>
+                            {% endif %}
+                            <hr>
+                        </div>
+                    </div>
+                {% endfor %}
         </div>
 
         <div class="container">
